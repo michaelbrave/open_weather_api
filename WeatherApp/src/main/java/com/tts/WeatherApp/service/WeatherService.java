@@ -9,37 +9,39 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Collections;
 import java.util.List;
 
 @Service
 public class WeatherService {
     @Value("${api_key}")
     private String apiKey;
-
     @Autowired
     private ZipCodeRepository zipCodeRepository;
 
-    public Response getForecast(String zipCode) {
-        String url = "http://api.openweathermap.org/data/2.5/weather?zip=" + zipCode + "&units=imperial&appid=" + apiKey;
+    public Response getForecast(String zipCode){
+        String url = "http://api.openweathermap.org/data/2.5/weather?zip=" + zipCode + "&appid=" + apiKey;
         RestTemplate restTemplate = new RestTemplate();
-        try {
-            Response response = restTemplate.getForObject(url, Response.class);
-            zipCodeRepository.save(new ZipCode(zipCode));
-            return response;
-        } catch (HttpClientErrorException ex) {
+        try{
+            return restTemplate.getForObject(url, Response.class);
+        }catch(HttpClientErrorException exception){
             Response response = new Response();
-            response.setName("error");
+            response.setName("ERROR");
             return response;
         }
     }
 
-    public List<ZipCode> getUp10MostRecentSearches() {
-        List<ZipCode> zipCodes = (List<ZipCode>) zipCodeRepository.findAll();
-        int fromIndex = Math.max(zipCodes.size() - 10, 0);
-        int toIndex = zipCodes.size();
-        zipCodes = zipCodes.subList(fromIndex, toIndex);
-        Collections.reverse(zipCodes);
-        return zipCodes;
+    public ZipCode findByZipCode(String zip) {
+        return zipCodeRepository.findByZipCode(zip);
+    }
+
+    public List<String> findMostRecent() {
+        return zipCodeRepository.findMostRecent();
+    }
+
+    public void createZip(String zip) {
+        ZipCode zipCode = new ZipCode();
+        zipCode.setZipCode(zip);
+
+        zipCodeRepository.save(zipCode);
     }
 }
