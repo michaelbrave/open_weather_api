@@ -11,7 +11,7 @@ import java.util.List;
 public interface ZipCodeRepository extends CrudRepository<ZipCode, Long>{
     ZipCode findByZipCode(String zip);
 
-    @Query(value = "SELECT ZIP_CODE,FROM ZIP_CODES ORDER BY CREATED_AT DESC LIMIT 10",
+    @Query(value = "SELECT ZIP_CODE,FROM ZIP_CODE ORDER BY CREATED_AT DESC LIMIT 10",
             nativeQuery = true)
     List<String> findMostRecent();
 }

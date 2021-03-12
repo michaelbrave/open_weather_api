@@ -35,6 +35,6 @@ public class ZipCode {
     }
     @Override
     public String toString() {
-        return "ZipCodes [id=" + id + ", zipCode=" + zipCode + "]";
+        return "ZipCode [id=" + id + ", zipCode=" + zipCode + "]";
     }
 }
